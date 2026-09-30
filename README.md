@@ -1,6 +1,8 @@
 # ActivityWatch Window Event Processor
 
-Python scripts to fetch, clean, group, and analyze window activity logs from **ActivityWatch**. It helps you understand how you spend your time on your computer.
+- Over the past two decades, researchers have found that the average time people stay focused on a single task has dropped from about 2.5 minutes (150 seconds, in 2003) to roughly 40 seconds (in 2024).
+
+- This project contains Python scripts to fetch, clean, group, and analyze window activity logs from **ActivityWatch**. It helps you understand how you spend your time on your computer.
 
 ## Features
 
@@ -30,10 +32,9 @@ Python scripts to fetch, clean, group, and analyze window activity logs from **A
 Thời điểm (Timestamp)| Ứng dụng / Tab (Title)                             | Thời lượng (duration)
 -------------------------------------------------------------------------------------------
 15 phút trước        | Chrome: Phần Mềm Theo Dõi Độ Tập Trung - Google... | 4.2 phút
-1 giờ trước          | iTerm2                                             | 12.5 phút
-2 giờ trước          | Code                                               | 45.0 phút
+2 giờ trước          | Code                                               | 57.5 phút
 
 --- THỐNG KÊ ---
-Tổng số task/task nhóm sau khi xử lý: 3
-Thời gian trung bình mỗi task/nhóm: 20.6 phút (1239.14 giây)
+Tổng số task/task nhóm sau khi xử lý: 2
+Thời gian trung bình mỗi task/nhóm: 30.6 phút (1851 giây)
 ```
