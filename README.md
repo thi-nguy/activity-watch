@@ -37,7 +37,3 @@ Thời điểm (Timestamp)| Ứng dụng / Tab (Title)                          
 Tổng số task/task nhóm sau khi xử lý: 3
 Thời gian trung bình mỗi task/nhóm: 20.6 phút (1239.14 giây)
 ```
-
-## License
-
-This project is open-source and free to use for personal productivity tracking.
