@@ -17,21 +17,37 @@ if window_bucket_id:
 
   processed_events = []
   for e in events:
-    app_name = e.get("data", {}).get("app", "")
+    data = e.get("data", {})
+    app_name = data.get("app", "")
+    title = data.get("title", "")
+
+    # Lấy phần đầu tiên của title nếu là Google Chrome (phân cách bởi dấu '-')
+    chrome_main_title = ""
+    if app_name == "Google Chrome" and title:
+      chrome_main_title = title.split("-")[0].strip()
 
     # Gộp các sự kiện liên tiếp nếu:
-    # 1. Không phải là Google Chrome (tức là app khác như iTerm2, VS Code, Finder, v.v.)
-    # 2. Sự kiện ngay trước đó cũng có cùng tên app
-    if app_name != "Google Chrome" and processed_events:
+    # 1. Sự kiện ngay trước đó có cùng app_name
+    # 2. Nếu là Google Chrome, phần đầu của title cũng phải giống nhau
+    if processed_events:
       last_event = processed_events[-1]
-      last_app = last_event.get("data", {}).get("app", "")
+      last_data = last_event.get("data", {})
+      last_app = last_data.get("app", "")
 
       if last_app == app_name:
-        # Cộng dồn thời lượng (duration) vào sự kiện trước đó của cùng app đó
-        last_event["duration"] += e.get("duration", 0)
-        continue
+        if app_name == "Google Chrome":
+          last_title = last_data.get("title", "")
+          last_main_title = (
+              last_title.split("-")[0].strip() if last_title else ""
+          )
+          if last_main_title == chrome_main_title:
+            last_event["duration"] += e.get("duration", 0)
+            continue
+        else:
+          # Đối với app khác (không phải Chrome), chỉ cần trùng tên app là gộp
+          last_event["duration"] += e.get("duration", 0)
+          continue
 
-    # Riêng Google Chrome hoặc các app khác không đứng liền nhau thì giữ nguyên
     processed_events.append(e)
 
   # Lọc các duration hợp lệ (>0) để tính toán
@@ -44,7 +60,7 @@ if window_bucket_id:
   if durations:
     avg_duration = sum(durations) / len(durations)
 
-    # --- IN RA DANH SÁCH TASK VỚI TITLE CỦA CHROME ĐƯỢC CẮT NGẮN ---
+    # --- IN RA DANH SÁCH TASK ---
     print("--- DANH SÁCH TASK/APP ---")
     print(f"{'Thời điểm':<20} | {'Ứng dụng / Tab (Title)':<50} | {'Thời lượng':<15}")
     print("-" * 91)
@@ -79,9 +95,9 @@ if window_bucket_id:
         app_name = app_data.get("app", "Unknown")
         title = app_data.get("title", "")
 
-        # Nếu là Google Chrome thì hiển thị thêm title (đã được giới hạn độ dài)
+        # Xử lý hiển thị title của Chrome (cắt ngắn nếu quá dài)
         if app_name == "Google Chrome":
-          max_title_len = 35  # Bạn có thể thay đổi độ dài tối đa ở đây
+          max_title_len = 35
           if len(title) > max_title_len:
             title = title[:max_title_len] + "..."
           display_name = f"Chrome: {title}"
@@ -97,10 +113,10 @@ if window_bucket_id:
         print(f"{time_str:<20} | {display_name:<50} | {duration_str:<15}")
 
     print("\n--- THỐNG KÊ ---")
-    print(f"Tổng số task/tab sau khi xử lý: {len(durations)}")
+    print(f"Tổng số task/task nhóm sau khi xử lý: {len(durations)}")
     print(
-        f"Thời gian trung bình mỗi task/tab: {avg_duration / 60:.2f} phút"
+        f"Thời gian trung bình mỗi task/nhóm: {avg_duration / 60:.2f} phút"
         f" ({avg_duration:.2f} giây)\n"
     )
 else:
-  print("Không tìm thấy bucket window.")
+    print("Không tìm thấy bucket window.")
