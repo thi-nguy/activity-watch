@@ -189,21 +189,21 @@ if window_bucket_id:
         title = app_data.get("title", "")
 
         # Xử lý hiển thị title của Chrome (cắt ngắn nếu quá dài)
+        max_title_len = 90
         if app_name == "Google Chrome":
-          max_title_len = 70
-          if len(title) > max_title_len:
-            title = title[:max_title_len] + "..."
+          # max_title_len = 90
+          # if len(title) > max_title_len:
+          #   title = title[:max_title_len] + "..."
           display_name = f"Chrome: {title}"
+          display_name = display_name if len(display_name) <= max_title_len else display_name[:max_title_len-3] + "..."
+
         else:
           display_name = app_name
 
         # Quy đổi thời lượng sang phút/giây
-        if duration >= 60:
-          duration_str = f"{duration / 60:.1f} phút"
-        else:
-          duration_str = f"{duration:.1f} giây"
+        duration_str = f"{duration:.1f} giây" f" - ({duration / 60:.1f} phút)"
 
-        print(f"{time_str:<20} | {display_name:<90} | {duration_str:<15}")
+        print(f"{time_str:<20} | {display_name:<90} | {duration_str:<20}")
 
     print("\n--- THỐNG KÊ ---")
     print(
